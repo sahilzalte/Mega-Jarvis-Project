@@ -1,0 +1,46 @@
+<!-- Bottom right -->
+def play_background_video():
+    global video_stopped
+    video_stopped = False
+    
+    try:
+        # Get screen resolution
+        screen = screeninfo.get_monitors()[0]
+        screen_width, screen_height = screen.width, screen.height
+
+        # Window size
+        win_width, win_height = 1140, 360
+
+        # Calculate bottom-right position
+        x_pos = screen_width - win_width - 20  # 20px margin from right
+        y_pos = screen_height - win_height - 50  # 50px from bottom
+
+        # Create persistent window
+        cv2.namedWindow("Jarvis", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("Jarvis", win_width, win_height)
+        cv2.moveWindow("Jarvis", x_pos, y_pos)
+        
+        # Set window properties after creation
+        cv2.setWindowProperty("Jarvis", cv2.WND_PROP_TOPMOST, 1)
+        cv2.setWindowProperty("Jarvis", cv2.WND_PROP_VISIBLE, 1)
+
+        cap = cv2.VideoCapture("../Frontend/bg.mp4")
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        delay = int(1000 / fps) if fps > 0 else 33
+
+        while not video_stopped:
+            ret, frame = cap.read()
+            if not ret:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
+                
+            cv2.imshow('Jarvis', frame)
+            key = cv2.waitKey(delay)
+            if key == ord('q'):
+                break
+
+    except Exception as e:
+        print(f"Video error: {e}")
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()

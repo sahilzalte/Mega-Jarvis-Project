@@ -1,0 +1,3 @@
+If nedd the import the module then run this command on Backend Folder
+'''  pip install -r requirements.txt  '''
+<!-- pip install --upgrade pip -->
